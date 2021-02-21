@@ -1,0 +1,229 @@
+@import "../../variables.scss";
+
+.logo {
+    padding: 10px;
+    font-size: 1.5em;
+    font-weight: 700;
+    color: #495772;
+    cursor: pointer;
+}
+
+
+.header {
+    width:100%;
+    display: flex;
+    align-items: center;
+    margin-bottom:10px;
+
+    .game-id {
+        font-size:1.2em;
+        
+    }
+}
+
+
+.game-page {
+    min-height: 100vh;
+    width:100vw;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: $bgColor;
+
+    .turn-indicator {
+        font-size:.9em;
+        font-weight:900;
+    }
+    .game-container {
+        display:flex;
+        align-items: center;
+        justify-content: center;
+
+        ._space3d {
+            margin-left:20px; 
+        }
+    }
+
+    .game-controls {
+        display: flex;
+        flex-direction: row;
+        .button:not(:first-child) {
+            margin-left:10px;
+        }
+    }
+
+    .game-page-wrapper {
+        width: 80%;
+        min-width:600px;
+        max-width:900px;
+    }
+
+    .game-card-container {
+        display:flex;
+    }
+
+    .game-main-card-counter {
+        text-align: left;
+        margin-top:10px;
+        font-weight:bold;
+        color: rgb(255, 208, 0);
+        width:100%;
+    }
+}
+
+
+.player-list {
+    border:1px solid $secondaryBgColor;
+    margin-left:10px;
+    width:270px;
+    min-width:270px;
+    border-radius: 5px;
+    font-size:1.2em;
+    
+    .player-list-player {
+        padding: 0px 20px 0px 20px;
+
+        .inactive {
+            color:grey;
+        }
+        .player-top {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .player-list-name {
+            flex-grow:1;
+            text-align:left;
+         
+            max-width: 90%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            
+        }
+
+        .player-list-score {
+            text-align: right;
+            font-weight:bold;
+            min-width:60px;
+            font-size:.9em;
+        }
+        .middot {
+            margin-left:5px; 
+            margin-right: 5px;
+        }
+        .player-dice {
+            display:flex;
+            margin-top:-6px;
+            font-size:.9em;
+        }
+
+        .player-dice-count {
+            display:flex;
+            align-items: center;
+            font-size:.9em;
+            
+            .player-dice-count-label {
+                margin-right:5px;
+                min-width:20px;
+                text-align: right;
+            }
+        }
+    }   
+
+    .active-player {
+        background-color:  rgb(59, 66, 83)
+    }
+}
+
+
+.join-modal-container {
+    position:fixed;
+    top: 0; 
+    left:0;
+    width:100vw;
+    height:100vw;
+    background-color: rgba(0,0,0,.5);
+    
+    .join-modal-view {
+        padding:30px;
+        width:500px;
+        margin-top:200px;
+        background-color: $bgColor;
+        margin-left:-250px; 
+        left:50%;
+        position:relative;
+        display: flex;
+        box-shadow: 1px 0px 5px #273c64;
+
+        .input {
+            background-color: $secondaryBgColor;
+            border:1px solid #1c2536;
+            margin-right: 10px;
+            flex-grow: 1;
+            color: $fontColor;
+        }
+        
+
+        .join-modal-control {
+            margin-top:10px;
+            width:100%;
+            display:flex;
+            justify-content: space-between;
+        }
+    }
+}
+
+
+.win-screen {
+    background-color: #151618ce;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width:100%;
+    height:100%;
+    display:flex;
+    z-index:10;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn ease .75s;
+
+    .final-scores-container {
+        .winner {
+            min-width:400px;
+            padding:20px;
+            
+            border-radius:10px;
+            background-color: #d6b704;
+            color:white;
+            font-weight:bold;
+            box-shadow: 0 0 25px gold;
+            
+            .winner-title {
+                font-size:2em;
+            }
+            
+            .winner-score {
+                margin-top:10px;
+                font-size:1.5em;
+            }
+        }
+
+        .other-scores {
+            margin-top:20px;
+
+            .final-other-score {
+                font-size:1.2em;
+                color : white;
+                display:flex;
+            }
+        }
+    }
+}
+
+
+@keyframes fadeIn {
+    0% {opacity:0;}
+    100% {opacity:1;}
+}

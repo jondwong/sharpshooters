@@ -1,0 +1,40 @@
+{
+  "name": "shooter-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel ./src --out-dir ./build",
+    "start": "nodemon --exec babel-node src/app.js",
+    "deploy": "node_modules/.bin/babel src --out-dir dist",
+    "lint": "eslint"
+  },
+  "author": "Jon Wong",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/cli": "^7.12.13",
+    "@babel/core": "^7.12.13",
+    "@babel/node": "^7.12.13",
+    "@babel/plugin-transform-regenerator": "^7.5.1",
+    "@babel/preset-env": "^7.12.13",
+    "babel-eslint": "^10.1.0",
+    "consola": "^2.15.2",
+    "core-js": "^3.9.0",
+    "cors": "^2.8.5",
+    "dateformat": "^4.5.1",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "http": "^0.0.1-security",
+    "immutable": "^4.0.0-rc.12",
+    "lodash": "^4.17.20",
+    "random-words": "^1.1.1",
+    "randomcolor": "^0.6.2",
+    "regenerator-runtime": "^0.13.7",
+    "socket-io": "^1.0.0",
+    "socket.io": "^3.1.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}

@@ -1,0 +1,41 @@
+@import '../../variables';
+
+.card-row {
+    display: flex;
+    align-items: center;
+
+    // .black {
+    //     background-color: rgb(194, 2, 2);
+    //         border:1px solid rgb(75, 72, 72);
+    // }
+}
+
+.card-row-values {
+    display: flex;
+    flex-grow: 1;
+    .card-dice:not(:first-child) {
+        margin-left:10px;
+    }
+}
+
+.game-card {
+    width:80%;
+    min-width:600px;
+    border:1px solid $secondaryBgColor;
+    padding:20px;
+}
+
+.card-points {
+    font-size:1.3em;
+    font-weight:bold;
+    color: white;
+    width:60px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height:60px;
+    border:1px solid #505050;
+
+}
+

@@ -1,0 +1,146 @@
+$diceSize:100px;
+$translation:$diceSize/2;
+.cube {
+    font-size:80px;
+    width: $diceSize;
+    height:$diceSize;
+    margin:10px auto;
+    transform-style: preserve-3d;
+    box-sizing: border-box;
+
+}
+
+.rolling {
+     animation: spin-cube infinite .6s;
+}
+
+.side {
+    box-sizing: border-box;
+    position: absolute;
+    padding:3px;
+    width: 100%;
+    height:100%;
+    background:rgba(rgb(46, 137, 190), .9);
+    border:1px solid #1b5272;
+    text-align:center;
+    line-height: $diceSize;
+    border-radius:5px;
+    display: flex;
+    .dot {
+        display:block;
+        width:24px;
+        height:24px;
+        border-radius:50%;
+        background-color: white;
+    }
+   
+    cursor: pointer;
+}
+
+.front {
+    transform: rotateX(0deg) translateZ($diceSize/2);
+    justify-content: center;
+    align-items: center;
+}
+.top {transform: rotateX(90deg) translateZ($translation);}
+.right {transform: rotateY(90deg) translateZ($translation);}
+.left {transform: rotateY(-90deg) translateZ($translation);}
+.bottom {transform: rotateX(-90deg) translateZ($translation);}
+.back {transform: rotateY(-180deg) translateZ($translation);}
+
+
+.one {
+    justify-content: center;
+    align-items: center;
+}
+
+.two {
+    justify-content: space-between;
+    .dot:nth-of-type(2) {
+        align-self: flex-end;
+    }
+}
+
+.three {
+    justify-content: space-between;
+    .dot:nth-of-type(3) {
+        align-self: flex-end;
+    }
+    .dot:nth-of-type(2) {
+        align-self: center;
+    }
+}
+
+.four, .six {
+    display:flex;
+    
+    .col {
+        
+        display:flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex-grow:1;
+    }
+
+    .col:first-child {
+        align-items: flex-start;
+    }
+
+    
+}
+
+.five {
+     .col {
+        
+        display:flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: flex-end;
+        flex-grow:1;
+        color: #3c4653;
+    }
+
+
+    .col:first-child {
+        align-items: flex-start;
+    }
+    
+    .col:nth-child(2) {
+        align-items: center;
+        justify-content: center;
+    }
+
+}
+
+
+@keyframes move-origin {
+    0% { perspective-origin: 0% 0%;}
+    25% { perspective-origin: 100% 0%;}
+    50% { perspective-origin: 100% 100%;}
+    75% { perspective-origin: 0% 100%;}
+    100% { perspective-origin: 0% 0%;}
+}
+
+@keyframes spin-cube {
+    16%      { transform: rotateY(-90deg); }
+    33%      { transform: rotateY(-90deg) rotateZ(90deg); }
+    50%      { transform: rotateY(180deg) rotateZ(90deg); }
+    66%      { transform: rotateY(90deg) rotateX(90deg); }
+    83%      { ttransform: rotateX(90deg); }
+}
+
+
+.dice-container {
+    display: flex;
+    justify-content: space-between;
+
+    .die:not(:first-child) {
+        margin-left:20px;
+    }
+}
+
+.selected {
+    border:5px solid gold;
+    border-radius: 5px;
+}
