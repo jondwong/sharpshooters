@@ -1,15 +1,19 @@
 import {io} from 'socket.io-client';
 
 // const ENDPOINT = 'http://localhost:3004';
-const ENDPOINT = 'http://localhost:3004/'
+const ENDPOINT = 'http://0.0.0.0:3004'
 
 let socket;
 
 export const initiateSocket = (room) => {
     if(socket) {
+        console.log('socket found, returning null', socket);
         return;
     }
+    
+    console.log('Joining socket on URL:', ENDPOINT);
     socket = io(ENDPOINT);
+    console.log('socket: ', socket);
     var onevent = socket.onevent;
     socket.onevent = function (packet) {
         var args = packet.data || [];
@@ -24,6 +28,7 @@ export const initiateSocket = (room) => {
 };
 
 export const disconnectSocket = () => {
+    console.log('disconnecting socket');
     if(socket) socket.disconnect();
 }
 
