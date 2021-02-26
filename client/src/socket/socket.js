@@ -1,7 +1,7 @@
 import {io} from 'socket.io-client';
 
 // const ENDPOINT = 'http://localhost:3004';
-const ENDPOINT = 'http://192.168.99.100:3004/'
+const ENDPOINT = 'http://localhost:3004/'
 
 let socket;
 
