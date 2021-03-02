@@ -148,13 +148,6 @@ const cardDiceSelected = (previousState, { rowIdx, cellIdx }) => {
     let card = nextState.cards[nextState.currentCardIdx];
     let clicked = card.rows[rowIdx].values[cellIdx];
     let currentTurn = nextState.currentTurn;
-
-    // console.log('~~~~~~~~~~ CARD DICE SELECTED ~~~~~~~~~~')
-    // console.log('activeDiceIdx', currentTurn.activeDiceIdx);
-    // console.log('active dice', currentTurn.dice[currentTurn.activeDiceIdx]);
-    // console.log('clicked dice', clicked);
-    // console.log(card.rows[rowIdx].activeIdx, cellIdx);
-
     if(currentTurn.activeDiceIdx !== null && card.rows[rowIdx].activeIdx === cellIdx) {
         let activeDice = currentTurn.dice[currentTurn.activeDiceIdx];
 
@@ -244,12 +237,11 @@ const rollDice = (previousState, args) => {
      *  Identify actions player can take based on current roll
      */ 
     let currDiceValues = new Array(7).fill(null);
-    // console.log('currentTurn dice: ', currentTurn.dice);
+
     currentTurn.dice.forEach(die=>{
         currDiceValues[die.diceVal] = true;
     });
 
-    // console.log('currentDiceValues = ', currDiceValues);
     let hasMove = card.rows.filter( row => {
         return !row.winner;
     }).some(row=>{
