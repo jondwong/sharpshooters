@@ -1,7 +1,9 @@
 import _ from 'lodash';
+import { values } from 'regenerator-runtime';
 import generateCard from './card';
 
 const MAX_DICE = 5;
+const CARDS_PER_GAME = 5
 const GAME_STATES = {
     NOT_STARTED: 'NOT_STARTED',
     IN_PROGRESS: 'IN_PROGRESS',
@@ -23,7 +25,7 @@ export function getDefaultState({gameId}) {
         userDiceCounts: {},
         currentActiveDiceIdx: null,
         currentTurnUserId: null,
-        cards: new Array(1).fill(null).map(()=>generateCard()),
+        cards: new Array(CARDS_PER_GAME).fill(null).map(()=>generateCard()),
         currentCardIdx: 0,
         activeDice: null,
         gameState: GAME_STATES.NOT_STARTED,
@@ -147,63 +149,74 @@ const cardDiceSelected = (previousState, { rowIdx, cellIdx }) => {
     let clicked = card.rows[rowIdx].values[cellIdx];
     let currentTurn = nextState.currentTurn;
 
-    console.log('~~~~~~~~~~ CARD DICE SELECTED ~~~~~~~~~~')
-    console.log('activeDiceIdx', currentTurn.activeDiceIdx);
-    console.log('active dice', currentTurn.dice[currentTurn.activeDiceIdx]);
-    console.log('clicked dice', clicked);
-    console.log(card.rows[rowIdx].activeIdx, cellIdx);
+    // console.log('~~~~~~~~~~ CARD DICE SELECTED ~~~~~~~~~~')
+    // console.log('activeDiceIdx', currentTurn.activeDiceIdx);
+    // console.log('active dice', currentTurn.dice[currentTurn.activeDiceIdx]);
+    // console.log('clicked dice', clicked);
+    // console.log(card.rows[rowIdx].activeIdx, cellIdx);
 
-    if(currentTurn.activeDiceIdx !== null) {
+    if(currentTurn.activeDiceIdx !== null && card.rows[rowIdx].activeIdx === cellIdx) {
         let activeDice = currentTurn.dice[currentTurn.activeDiceIdx];
-        if( clicked.diceVal === activeDice.diceVal
-            && card.rows[rowIdx].activeIdx === cellIdx) {
-                console.log('in here');
-                card.rows[rowIdx].activeIdx++;
-                card.rows[rowIdx].values[cellIdx].owner = nextState.users[currentTurn.userId];
-                currentTurn.dice.splice(currentTurn.activeDiceIdx, 1)
-                currentTurn.numDice--;
-                nextState.userDiceCounts[currentTurn.userId]--;
-                currentTurn.activeDiceIdx = null;
 
-                currentTurn.canRoll = true;
-                currentTurn.canPass = true;
-                currentTurn.actions.push(PLAYER_ACTIONS.PLAYED_DIE);
+        if(clicked.isWild) {
+            // Valid click
+            let newValue = activeDice.diceVal;
+            card.rows[rowIdx].values.filter(die=>{
+                return die.isWild == clicked.isWild && die.diceVal == clicked.diceVal; 
+            }).forEach(die=> {
+                die.isWild = false;
+                die.diceVal = newValue;
+            });
+            clicked = card.rows[rowIdx].values[cellIdx];
+        }
 
-                /*
-                 *  The row has been completed, so it is time to assign points!
-                 */
-                if(card.rows[rowIdx].activeIdx >= card.rows[rowIdx].values.length) {
-                    nextState.userPoints[currentTurn.userId] += card.rows[rowIdx].points;
-                    card.rows[rowIdx].winner = currentTurn.userId;
+        if( clicked.diceVal === activeDice.diceVal) {
+            card.rows[rowIdx].activeIdx++;
+            card.rows[rowIdx].values[cellIdx].owner = nextState.users[currentTurn.userId];
+            currentTurn.dice.splice(currentTurn.activeDiceIdx, 1)
+            currentTurn.numDice--;
+            nextState.userDiceCounts[currentTurn.userId]--;
+            currentTurn.activeDiceIdx = null;
+
+            currentTurn.canRoll = (currentTurn.dice.length > 0);
+            currentTurn.canPass = true;
+            currentTurn.actions.push(PLAYER_ACTIONS.PLAYED_DIE);
+
+            /*
+                *  The row has been completed, so it is time to assign points!
+                */
+            if(card.rows[rowIdx].activeIdx >= card.rows[rowIdx].values.length) {
+                nextState.userPoints[currentTurn.userId] += card.rows[rowIdx].points;
+                card.rows[rowIdx].winner = currentTurn.userId;
+            }
+
+            /*
+                *  Check to see if the card has been completed
+                */
+            let cardIsComplete = card.rows.every(row=>row.hasOwnProperty('winner'));
+            if(cardIsComplete) {
+
+                if(nextState.currentCardIdx === (nextState.cards.length - 1)) {
+                    nextState.gameState = GAME_STATES.COMPLETE;
+                    nextState.winner = null;
+                    let scores = Object.keys(nextState.userPoints)
+                        .reduce(function(scores,userId) {
+                                scores.push({ 
+                                    user: nextState.users[userId],
+                                    score: nextState.userPoints[userId]
+                                });
+                                return scores;
+                            }.bind(this), []);
+                    scores.sort((a,b)=>{return a.score-b.score; }).reverse();
+                    nextState.winner = scores.splice(0,1)[0];
+                    nextState.finalOtherScores = scores;
+
+                } else {
+                    nextState.currentCardIdx++;
+                    nextState = resetDice(nextState);
+                    nextState = setTurn(nextState, { userId: currentTurn.userId });
                 }
-
-                /*
-                 *  Check to see if the card has been completed
-                 */
-                let cardIsComplete = card.rows.every(row=>row.hasOwnProperty('winner'));
-                if(cardIsComplete) {
-
-                    if(nextState.currentCardIdx === (nextState.cards.length - 1)) {
-                        nextState.gameState = GAME_STATES.COMPLETE;
-                        nextState.winner = null;
-                        let scores = Object.keys(nextState.userPoints)
-                            .reduce(function(scores,userId) {
-                                    scores.push({ 
-                                        user: nextState.users[userId],
-                                        score: nextState.userPoints[userId]
-                                    });
-                                    return scores;
-                                }.bind(this), []);
-                        scores.sort((a,b)=>{return a.score-b.score; }).reverse();
-                        nextState.winner = scores.splice(0,1)[0];
-                        nextState.finalOtherScores = scores;
-
-                    } else {
-                        nextState.currentCardIdx++;
-                        nextState = resetDice(nextState);
-                        nextState = setTurn(nextState, { userId: currentTurn.userId });
-                    }
-                }
+            }
         }
     }
 
@@ -231,20 +244,17 @@ const rollDice = (previousState, args) => {
      *  Identify actions player can take based on current roll
      */ 
     let currDiceValues = new Array(7).fill(null);
-    console.log('currentTurn dice: ', currentTurn.dice);
+    // console.log('currentTurn dice: ', currentTurn.dice);
     currentTurn.dice.forEach(die=>{
         currDiceValues[die.diceVal] = true;
     });
 
-    console.log('currentDiceValues = ', currDiceValues);
+    // console.log('currentDiceValues = ', currDiceValues);
     let hasMove = card.rows.filter( row => {
         return !row.winner;
     }).some(row=>{
-        return currDiceValues[row.values[row.activeIdx].diceVal] !== null;
+        return currDiceValues[row.values[row.activeIdx].diceVal] !== null || ['*', '**'].indexOf(row.values[row.activeIdx].diceVal) !== -1;
     });
-
-    let hasPlayedDie = currentTurn.actions.includes(PLAYER_ACTIONS.PLAYED_DIE);
-    console.log('hasMove', hasMove)
 
     currentTurn.canPass = (!hasMove) ? true : false;
     currentTurn.canRoll = false;

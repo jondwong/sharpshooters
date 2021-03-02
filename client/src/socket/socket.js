@@ -1,7 +1,8 @@
 import {io} from 'socket.io-client';
+import 'dotenv'
 
-// const ENDPOINT = 'http://localhost:3004';
-const ENDPOINT = 'http://sharpshooters.parseiful.com:3004'
+console.log(process.env);
+const ENDPOINT = process.env.REACT_APP_SOCKET_URL;
 
 let socket;
 

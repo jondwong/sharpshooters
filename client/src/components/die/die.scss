@@ -35,6 +35,21 @@ $translation:$diceSize/2;
     }
    
     cursor: pointer;
+
+    .col {
+        font-size:0px;
+        line-height:0px;
+    }
+    .icon {
+        // display: flex;
+        // flex-direction: column;
+        // align-items: center;
+        // width: 100%;
+        // justify-content: center;
+        width:24px;
+        height:24px;
+        font-size:0px;
+    }
 }
 
 .front {
@@ -56,10 +71,18 @@ $translation:$diceSize/2;
 
 .two {
     justify-content: space-between;
+    .col {
+        display:flex;
+    }
     .dot:nth-of-type(2) {
         align-self: flex-end;
     }
+
+    .icon:nth-of-type(2) {
+        align-self: flex-end;
+    }
 }
+
 
 .three {
     justify-content: space-between;

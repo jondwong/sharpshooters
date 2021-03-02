@@ -1,6 +1,7 @@
 
 import './die.scss';
 import React from 'react';
+import { FaRegStar} from 'react-icons/fa';
 
 /********************************************************
  * Dice
@@ -14,7 +15,8 @@ const Dice = ({
     backgroundColor=null,
     borderColor=null,
     dotColor='white',
-    opacity=null
+    opacity=null,
+    
 }) => {
     let style = {};
     if(size) {
@@ -32,9 +34,9 @@ const Dice = ({
              rolling &&
              (
                  <div className={`cube ${rolling ? 'rolling' : ''}`}>
-                    {[1,2,3,4,5,6].map((val)=>{
+                    {[1,2,3,4,5,6].map((value)=>{
                         return DiceFaceFactory({
-                            value: val,
+                            value,
                             isCube: true,
                             backgroundColor,
                             dotColor,
@@ -124,10 +126,10 @@ export class DiceManager extends React.Component {
                             <Dice 
                                 selected={this.props.activeDiceIdx == idx ? true: false} 
                                 rolling={this.props.roll} 
-                                value={d.diceVal} 
+                           
                                 onClick={this._diceSelected.bind(this, idx)}
                                 backgroundColor={this.props.currentUser.color}
-                                
+                                value={d.diceVal}
 
                                 />
                         ))
@@ -137,8 +139,9 @@ export class DiceManager extends React.Component {
                             <Dice 
                                 selected={false}
                                 rolling={this.props.roll} 
-                                value={Math.floor(Math.random()*6)+1} 
+                                value={Math.floor(Math.random()*6)+1}
                                 onClick={()=>{}}
+
                                 backgroundColor={this.props.currentUser.color}
                                 opacity={.5}
                                 />
@@ -176,6 +179,8 @@ const DiceFaceFactory = ({
         '4': { class: 'four', pos: 'right' },
         '5': { class: 'five', pos: 'top' },
         '6': { class: 'six', pos: 'back'},
+        '*': { class: 'one' },
+        '**': { class: 'two' }
     }
 
     const VAL_ELEMENTS = ({dotSize=null, dotColor=dotColor}) => ({
@@ -225,11 +230,24 @@ const DiceFaceFactory = ({
                 <Dot size={dotSize} color={dotColor}/>
                 <Dot size={dotSize} color={dotColor}/>
             </div>
+        ],
+        '*': [
+            <div className='icon'>
+                <FaRegStar size={dotSize * 2} color={dotColor}/>
+            </div>
+        ],
+        '**': [
+             <div className='icon'>
+                <FaRegStar size={dotSize * 1.5} color={dotColor} />
+            </div>,
+             <div className='icon'>
+                <FaRegStar size={dotSize * 1.5} color={dotColor} />
+            </div>
         ]
     })
-
-    let classes = [ 'side',   CUBE_VAL_MAPPINGS[`${value}`].class ]
-    if( isCube ) {
+    let key = `${value}`;
+    let classes = [ 'side',  CUBE_VAL_MAPPINGS[key] ? CUBE_VAL_MAPPINGS[key].class : '' ]
+    if( isCube && CUBE_VAL_MAPPINGS[key]) {
         classes = classes.concat([ 
             CUBE_VAL_MAPPINGS[`${value}`].pos,
         ])

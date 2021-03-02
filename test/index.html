@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <script src="https://cdn.socket.io/3.1.1/socket.io.min.js"></script>
+        <script>
+            const socket = io('http://localhost:3004');
+            io.on('from-api', data => {
+                console.log(data);
+            });
+        </script>
+    </head>
+    <body>
+        <div id='app'>
+            Hi
+        </div>
+    </body>
+</html>
