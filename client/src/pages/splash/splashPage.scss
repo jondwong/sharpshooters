@@ -62,3 +62,38 @@
 .splash-page-button {
     
 }
+
+@media only screen and (max-width: 600px) {
+  .splash-page-internal {
+      min-width: 200px;
+  }
+
+  .splash-page-control {
+      display:flex;
+      flex-direction: column;
+
+    div:not(:first-child) {
+        margin-left:0px;  
+    }
+  }
+
+  .splash-page-create-game {
+    width:100%;
+
+    .button {
+        width:100%;
+    }
+  }
+
+  .splash-page-join-game {
+      display: flex;
+      flex-direction: column;
+      width:100%;
+
+      .button {
+          margin-left:0px;
+          margin-top:10px;
+      }
+  }
+
+}

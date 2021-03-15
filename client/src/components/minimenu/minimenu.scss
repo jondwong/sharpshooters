@@ -1,0 +1,19 @@
+.minimenu {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    .card-count {
+       
+        display: flex;
+        flex-direction:row;
+        align-items: center;
+        justify-content:center;
+        color: #ffd000;
+        
+        font-size:1.3em;
+
+        div {
+            margin-right: 5px;
+        }
+    }
+}

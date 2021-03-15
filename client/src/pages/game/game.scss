@@ -227,3 +227,76 @@
     0% {opacity:0;}
     100% {opacity:1;}
 }
+
+
+@media screen and (max-width:600px) {
+    .logo {
+        span {
+            display:none;
+        }
+    }
+    .logo::after {
+        content: "sh|sh";
+    }
+    .game-page {
+        display: inherit;
+
+        .game-id {
+            display: none;
+        }
+
+        .game-page-wrapper {
+            width:100%;
+            min-width:450px;
+        }
+
+        .game-card {
+            width:100%;
+            min-width:unset;
+            border: none;
+            padding: 0px 10px 0px 10px;
+        }
+
+        .game-controls {
+            justify-content: center;
+        }
+
+        .game-main-card-counter, .turn-indicator {
+            display:none;
+        }
+    }
+
+
+
+    .game-card-container {
+        display:flex;
+        flex-direction: column;
+        .player-list { display:none };
+    }
+
+    .game-container {
+        .cube {
+            height:80px;
+            width:80px;
+
+            .dot {
+                height:20px;
+                width:20px;
+            }
+        }
+    }
+
+    .mobile-player-list {
+        display: block;
+        .header {
+            text-transform: uppercase;
+            font-weight:900;
+        }
+        .player-list {
+            width:100%;
+       
+            margin-left:0px;
+        }
+    }
+   
+}

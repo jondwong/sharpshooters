@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { DiceManager } from '../../components/die';
 import Card , {CardDice} from '../../components/card'
 import _ from 'lodash';
-
+import MiniMenu from '../../components/minimenu';
 
 class GamePage extends React.Component {
     constructor(props) {
@@ -125,10 +125,11 @@ class GamePage extends React.Component {
     render() {
         console.log('game render state:', this.state);
         console.log('game render props:', this.props);
+        
         return (
             <div className='game-page'>
                 <div className='header'>
-                    <div className='logo' onClick={function(){this.props.history.push('/')}.bind(this)}>sharpshooters.</div>
+                    <div className='logo' onClick={function(){this.props.history.push('/')}.bind(this)}><span>sharpshooters.</span></div>
                     <div className='game-id'>{this.state && this.state.id ? this.state.id : ''}</div>
                 </div>
                 { this.state.gameLoaded && 
@@ -158,8 +159,13 @@ class GamePage extends React.Component {
                                     } TURN!
                                 </div>
                             }
+
+                    <MiniMenu 
+                        currentCardIdx={this.state.currentCardIdx}
+                        numCards={this.state.cards.length}
+                    />
                         <div className='game-container'>
-                           
+                            
                             {
 
                                 this.state.currentTurn && this.state.currentTurn.userId && 
@@ -207,6 +213,17 @@ class GamePage extends React.Component {
                         >
                             Next Player
                         </button>
+                    </div>
+                }
+
+                { this.state.gameLoaded  &&
+                    <div className='mobile-player-list'>
+                        <div className='header'>Players</div>
+                        <PlayerList users={this.state.userOrder.map(id=>({ id , ...this.state.users[id]}))} 
+                                            userPoints={this.state.userPoints} 
+                                            currentTurnUserId={this.state.currentTurn.userId}
+                                            userDiceCounts={this.state.userDiceCounts}
+                                />
                     </div>
                 }
 
