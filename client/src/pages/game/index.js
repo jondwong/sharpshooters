@@ -222,7 +222,15 @@ class GamePage extends React.Component {
                         </button>
                     </div>
                 }
-
+                
+                {  this.state.gameState === 'NOT_STARTED' && this.state.users[this.props.userId] &&
+                    <div style={{marginTop:'20px'}}>
+                        <button className='button' onClick={this._startGame.bind(this)}>
+                            Start Game
+                        </button>
+                    </div>
+                }
+                
                 { this.state.gameLoaded  &&
                     <div className='bottom-player-list'>
                         <div className='header'>Players</div>
@@ -234,14 +242,6 @@ class GamePage extends React.Component {
                     </div>
                 }
 
-                {  this.state.gameState === 'NOT_STARTED' && this.state.users[this.props.userId] &&
-                    <div>
-                        <button className='button' onClick={this._startGame.bind(this)}>
-                            Start Game
-                        </button>
-                    </div>
-                }
-                
                 
                {
                    ( !this.state.gameReady && this.state.userOrder.indexOf(this.props.userId) == -1 ) &&
