@@ -1,5 +1,6 @@
 import Dice from '../die';
 import './card.scss';
+import {FaDelicious} from 'react-icons/fa'
 
 const Card = ({ card, highlightedValue = -1, onDiceClick=(row,cell)=>{
 
@@ -10,6 +11,13 @@ const Card = ({ card, highlightedValue = -1, onDiceClick=(row,cell)=>{
                 card.rows.map((r, rowIdx)=> {
                     return(
                         <div className='card-row'>
+                            <div>
+                                <div className={`card-points ${r.points < 0 ? 'red' : ''}`}>
+                                    {
+                                        r.points
+                                    }
+                                </div>
+                            </div>
                             <div className='card-row-values'>
                                 {
                                     r.values.map((dice, valIdx) =>{
@@ -28,11 +36,7 @@ const Card = ({ card, highlightedValue = -1, onDiceClick=(row,cell)=>{
                                     })
                                 }
                             </div>
-                            <div className={`card-points ${r.points < 0 ? 'black' : ''}`}>
-                                {
-                                    r.points
-                                }
-                            </div>
+                        
                         </div>
                     )
                 })

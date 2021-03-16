@@ -3,7 +3,7 @@ import { values } from 'regenerator-runtime';
 import generateCard from './card';
 
 const MAX_DICE = 5;
-const CARDS_PER_GAME = 5
+const CARDS_PER_GAME = 1;
 const GAME_STATES = {
     NOT_STARTED: 'NOT_STARTED',
     IN_PROGRESS: 'IN_PROGRESS',

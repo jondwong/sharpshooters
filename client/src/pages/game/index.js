@@ -15,7 +15,7 @@ class GamePage extends React.Component {
             diceRolling: false
         }
 
-        this._joinGameInputRef = React.createRef();;
+        this._joinGameInputRef = React.createRef();
 
         if(this.props.location.state && this.props.location.state.game) {
             this.state = Object.assign({}, baseState, { ...this.props.location.state.game, gameLoaded: true});
@@ -151,19 +151,26 @@ class GamePage extends React.Component {
                             {this.state.cards.length - this.state.currentCardIdx - 1 } cards remaining!
                         </div>
 
-                         {
-                                this.state.currentTurn && this.state.currentTurn.userId &&
-                                <div className='turn-indicator'>
-                                    {
-                                       this.state.currentTurn.userId == this.props.userId ? 'YOUR' : `${this.state.users[this.state.currentTurn.userId].username.toUpperCase()}'S`
-                                    } TURN!
-                                </div>
-                            }
+                        {
+                            this.state.currentTurn && this.state.currentTurn.userId &&
+                            <div className='turn-indicator'>
+                                {
+                                    this.state.currentTurn.userId == this.props.userId ? 'YOUR' : `${this.state.users[this.state.currentTurn.userId].username.toUpperCase()}'S`
+                                } TURN!
+                            </div>
+                        }
 
-                    <MiniMenu 
-                        currentCardIdx={this.state.currentCardIdx}
-                        numCards={this.state.cards.length}
-                    />
+                        {  this.state.currentTurn && this.state.currentTurn.userId &&
+                            <MiniMenu 
+                                currentCardIdx={this.state.currentCardIdx}
+                                numCards={this.state.cards.length}
+                                userTurnOrder={this.state.userTurnOrder}
+                                currentTurnUserId={this.state.currentTurn.userId}
+                                users={this.state.users}
+                                userId={this.props.userId}
+                            />
+                        }
+
                         <div className='game-container'>
                             
                             {
@@ -217,7 +224,7 @@ class GamePage extends React.Component {
                 }
 
                 { this.state.gameLoaded  &&
-                    <div className='mobile-player-list'>
+                    <div className='bottom-player-list'>
                         <div className='header'>Players</div>
                         <PlayerList users={this.state.userOrder.map(id=>({ id , ...this.state.users[id]}))} 
                                             userPoints={this.state.userPoints} 

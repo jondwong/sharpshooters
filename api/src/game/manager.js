@@ -38,14 +38,14 @@ class Game {
         // consola.info(
         //     `previousState = ${JSON.stringify(this._state, null, 2)}`
         // )
-        // try {
+        try {
             this._state = action(this._state, args);
-        // } catch (e) {
-        //     return {
-        //         code: STATE_UPDATE_STATUS_CODES.FAILURE,
-        //         message: e
-        //     };
-        // }
+        } catch (e) {
+            return {
+                code: STATE_UPDATE_STATUS_CODES.FAILURE,
+                message: e
+            };
+        }
         // consola.info(
         //     `newStaste = ${JSON.stringify(this._state, null, 2)}`,
         // )

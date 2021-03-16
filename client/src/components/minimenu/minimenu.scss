@@ -2,15 +2,24 @@
     flex-grow: 1;
     display: flex;
     flex-direction: row;
-    .card-count {
-       
+    padding:10px;
+
+    .mini-turn-indicator {
+        flex-grow: 1;
+        text-align: left;
+        font-weight: 900;
+    }
+
+    .mini-card-count {
         display: flex;
         flex-direction:row;
         align-items: center;
         justify-content:center;
         color: #ffd000;
         
-        font-size:1.3em;
+        font-size:1.0em;
+        font-weight:900;
+
 
         div {
             margin-right: 5px;
