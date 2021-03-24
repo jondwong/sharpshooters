@@ -101,14 +101,14 @@ const DiceFaceWild = ({ isCube = false, dotSize = null, dotColor = 'white', styl
 
 const DiceFaceWild2 = ({ isCube = false, dotSize = null, dotColor = 'white', styles={} }) => { 
     return (
-        <StyledDiceFaceOne style={styles}>
+        <StyledDiceFaceTwo style={styles}>
             <div className='icon'>
                 <FaRegStar size={dotSize * 1.5} color={dotColor} />
-            </div>,
+            </div>
              <div className='icon'>
                 <FaRegStar size={dotSize * 1.5} color={dotColor} />
             </div>
-        </StyledDiceFaceOne>
+        </StyledDiceFaceTwo>
     )
 }
 
