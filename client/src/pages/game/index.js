@@ -2,10 +2,32 @@ import React from 'react';
 import './game.scss';
 import { subscriptions, actions } from '../../socket/socket';
 import { withRouter } from 'react-router-dom';
-import { DiceManager } from '../../components/die';
-import Card , {CardDice} from '../../components/card'
+import DiceManager from '../../components/dice-manager';
 import _ from 'lodash';
 import MiniMenu from '../../components/minimenu';
+import Header from '../../components/header'
+import GameCard from '../../components/game-card'
+import PlayerList from '../../components/player-list'
+import BorderBox from '../../components/border-box'
+import EndgameModal from './components/endgame-modal/endgame-modal';
+import JoinModal from './components/join-modal';
+import {
+    CenteredVStack, Divider, Spacer
+} from '../../components/layout'
+
+import {
+    StyledGamePage,
+    GameContainerHStack,
+    GameCardSection,
+    GameControlsSection,
+    GameLobby,
+    Loading,
+    Heading,
+    MobilePlayerListContainer,
+    FullScreenPlayerSection
+ } from './game-page-styles'
+
+
 
 class GamePage extends React.Component {
     constructor(props) {
@@ -14,8 +36,6 @@ class GamePage extends React.Component {
             showJoinModal: false, 
             diceRolling: false
         }
-
-        this._joinGameInputRef = React.createRef();
 
         if(this.props.location.state && this.props.location.state.game) {
             this.state = Object.assign({}, baseState, { ...this.props.location.state.game, gameLoaded: true});
@@ -101,11 +121,11 @@ class GamePage extends React.Component {
         actions.startGame({ gameId: this.state.id});
     }
 
-    _joinGame() {
+    _joinGame(name) {
         actions.joinGame({
             gameId: this.state.id, 
             user: {
-                username: this._joinGameInputRef.current.value,
+                username: name,
                 id: this.props.userId
             }
         });
@@ -122,196 +142,125 @@ class GamePage extends React.Component {
         }.bind(this), 1000)
     }
 
-    render() {
-        console.log('game render state:', this.state);
-        console.log('game render props:', this.props);
-        
+    _renderGame() {
+        let isUserTurn = (this.state.currentTurn.userId == this.props.userId);
         return (
-            <div className='game-page'>
-                <div className='header'>
-                    <div className='logo' onClick={function(){this.props.history.push('/')}.bind(this)}><span>sharpshooters.</span></div>
-                    <div className='game-id'>{this.state && this.state.id ? this.state.id : ''}</div>
-                </div>
-                { this.state.gameLoaded && 
-                    <div className='game-page-wrapper'>
-                        <div className='game-card-container'>
-                            <Card 
-                                card={this.state.cards[this.state.currentCardIdx]} 
+            <StyledGamePage>
+                <Header gameId={this.state  ? this.state.id : null}/>
+                <GameContainerHStack>
+                    <GameCardSection>
+                        <GameCard
+                                cardData={this.state.cards[this.state.currentCardIdx]} 
                                 onDiceClick={this._handleCardDiceClicked.bind(this)}
-                            />
-            
                             
-                            <PlayerList users={this.state.userOrder.map(id=>({ id , ...this.state.users[id]}))} 
-                                        userPoints={this.state.userPoints} 
-                                        currentTurnUserId={this.state.currentTurn.userId}
-                                        userDiceCounts={this.state.userDiceCounts}
-                            />
-                        </div>
-                        <div className= {`game-main-card-counter`}>
-                            {this.state.cards.length - this.state.currentCardIdx - 1 } cards remaining!
-                        </div>
+                        />
+                        <MiniMenu 
+                            currentCardIdx={this.state.currentCardIdx}
+                            numCards={this.state.cards.length}
+                            userTurnOrder={this.state.userTurnOrder}
+                            currentTurnUserId={this.state.currentTurn.userId}
+                            users={this.state.users}
+                            userId={this.props.userId}
+                        />
+                    </GameCardSection>
+                    <Divider vertical={true} />
+                    <FullScreenPlayerSection>
+                        <Heading>Players</Heading>
+                        <PlayerList 
+                            users={this.state.userOrder.map(id=>({ id , ...this.state.users[id]}))} 
+                            userPoints={this.state.userPoints} 
+                            currentTurnUserId={this.state.currentTurn.userId}
+                            userDiceCounts={this.state.userDiceCounts}
+                        />
+                    </FullScreenPlayerSection>
+                </GameContainerHStack>
+                <DiceManager
+                    roll={this.state.diceRolling} 
+                    currentUser={this.state.users[this.state.currentTurn.userId]} 
+                    dice={this.state.currentTurn.dice} 
+                    activeDiceIdx={this.state.currentTurn.activeDiceIdx} 
+                    onDiceActivated={this._handleDiceActivated.bind(this)} 
+                    numAvailableDice={this.state.currentTurn.numDice}
+                />
+                <GameControlsSection isUserTurn={isUserTurn}>
+                    <button className='button' onClick={this._rollDice.bind(this)} 
+                            disabled={!this.state.currentTurn.canRoll}
+                    >Roll Dice</button>
+                     <button className='button' onClick={this._changeTurn.bind(this)}
+                        disabled={!this.state.currentTurn.canPass}
+                    >Next Player</button>
+                </GameControlsSection>
+                <MobilePlayerListContainer>
+                    <Heading>Players</Heading>
+                    <PlayerList 
+                        users={this.state.userOrder.map(id=>({ id , ...this.state.users[id]}))} 
+                        userPoints={this.state.userPoints} 
+                        currentTurnUserId={this.state.currentTurn.userId}
+                        userDiceCounts={this.state.userDiceCounts}
+                    />
+                </MobilePlayerListContainer>
+            </StyledGamePage>
+        )
+    }
 
-                        {
-                            this.state.currentTurn && this.state.currentTurn.userId &&
-                            <div className='turn-indicator'>
-                                {
-                                    this.state.currentTurn.userId == this.props.userId ? 'YOUR' : `${this.state.users[this.state.currentTurn.userId].username.toUpperCase()}'S`
-                                } TURN!
-                            </div>
-                        }
+    _renderWaiting() {
+        return (<Loading>Loading...</Loading>)
+    }
 
-                        {  this.state.currentTurn && this.state.currentTurn.userId &&
-                            <MiniMenu 
-                                currentCardIdx={this.state.currentCardIdx}
-                                numCards={this.state.cards.length}
-                                userTurnOrder={this.state.userTurnOrder}
-                                currentTurnUserId={this.state.currentTurn.userId}
-                                users={this.state.users}
-                                userId={this.props.userId}
-                            />
-                        }
-
-                        <div className='game-container'>
-                            
-                            {
-
-                                this.state.currentTurn && this.state.currentTurn.userId && 
-                                <DiceManager
-                                    roll={this.state.diceRolling} 
-                                    currentUser={this.state.users[this.state.currentTurn.userId]} 
-                                    dice={this.state.currentTurn.dice} 
-                                    activeDiceIdx={this.state.currentTurn.activeDiceIdx} 
-                                    onDiceActivated={this._handleDiceActivated.bind(this)} 
-                                    numAvailableDice={this.state.currentTurn.numDice}
-                                    />
-                            }
-                        </div>
-
-                        {
-                            this.state.gameState === 'COMPLETE' &&
-                            <div className='win-screen'>
-                                <div className='final-scores-container'>
-                                    <div className='winner'>
-                                        WINNER
-                                        <div className='winner-title'>{this.state.winner.user.username}</div>
-                                        <div className='winner-score'>${this.state.winner.score}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                    </div>
-
-                }
-                
-
-                { this.state.currentTurn && this.state.currentTurn.userId == this.props.userId &&
-                    <div className='game-controls' style={{marginTop:'20px'}}>
-                        {
-                            this.state.userDiceCounts[this.state.currentTurn.userId] > 0 &&
-                            <button className='button' onClick={this._rollDice.bind(this)} 
-                                disabled={!this.state.currentTurn.canRoll}
-                            >
-                                Roll Dice
-                            </button>
-                        }
-
-                        <button className='button' onClick={this._changeTurn.bind(this)}
-                            disabled={!this.state.currentTurn.canPass}
-                        >
-                            Next Player
-                        </button>
-                    </div>
-                }
-                
-                {  this.state.gameState === 'NOT_STARTED' && this.state.users[this.props.userId] &&
-                    <div style={{marginTop:'20px'}}>
+    _renderLobby() {
+        let userInGame = (this.props.userId in this.state.users);
+        return (
+            <GameLobby>
+                <Header gameId={this.state  ? this.state.id : null}/>
+                <CenteredVStack>
+                    <Spacer size={50}/>
+                    <Heading>Lobby</Heading>
+                    <Spacer size={20}/>
+                    <BorderBox>
+                        <PlayerList 
+                            users={this.state.userOrder.map(id=>({ id , ...this.state.users[id]}))} 
+                            userPoints={this.state.userPoints} 
+                            currentTurnUserId={null}
+                            userDiceCounts={this.state.userDiceCounts}
+                        />
+                    </BorderBox>
+                    <Spacer size={40}/>
+                    <div style={{marginTop:'20px', display:(this.state.users[this.props.userId] ? 'block': 'none')}}>
                         <button className='button' onClick={this._startGame.bind(this)}>
                             Start Game
                         </button>
                     </div>
+                </CenteredVStack>
+                { 
+                    !userInGame &&
+                    <JoinModal onJoinGameClicked={this._joinGame.bind(this)} />
                 }
-                
-                { this.state.gameLoaded  &&
-                    <div className='bottom-player-list'>
-                        <div className='header'>Players</div>
-                        <PlayerList users={this.state.userOrder.map(id=>({ id , ...this.state.users[id]}))} 
-                                            userPoints={this.state.userPoints} 
-                                            currentTurnUserId={this.state.currentTurn.userId}
-                                            userDiceCounts={this.state.userDiceCounts}
-                                />
-                    </div>
-                }
-
-                
-               {
-                   ( !this.state.gameReady && this.state.userOrder.indexOf(this.props.userId) == -1 ) &&
-                    <div className='join-modal-container'>
-                        <div className='join-modal-view'>
-                            <input className='input' placeholder='Enter your name...' ref={this._joinGameInputRef} />
-                            <button className='button' onClick={this._joinGame.bind(this)}>Join</button>
-                            
-                        </div>
-                    </div>
-               }
-            </div>
+            </GameLobby>
         )
+    }
+
+    _renderEndgame() {
+        return (
+            <EndgameModal winner={this.state.winner}/>
+        )
+    }
+
+    render() {
+        console.log('game render state:', this.state);
+        console.log('game render props:', this.props);
+        
+        if(!this.state.gameLoaded) {
+            return this._renderWaiting();
+        }
+
+        if(this.state.gameState === 'NOT_STARTED') {
+            return this._renderLobby();
+        } else if(this.state.gameState == 'COMPLETE' && this.state.winner) {
+            return this._renderEndgame();
+        }
+
+        return this._renderGame();
     }
 }
 
 export default withRouter(GamePage);
-
-
-const Player = ({
-    isActive,
-    user,
-    points,
-    numDiceRemaining,
-    diceDisplayVal
-}) => {
-    return(
-        <div className={`player-list-player ${ isActive ?'active-player' : '' }`}>
-            <div className='player-top'>
-                <div className={`player-list-name ${ !isActive ?'inactive' : '' }`}>
-                    {user.username}
-                </div>
-                <div className={`player-list-score ${ !isActive ?'inactive' : '' } `}>
-                    ${points}
-                </div>
-                <div className="middot">
-                
-                </div>
-                <div className={`player-dice-count `}>
-                    <div className={`player-dice-count-label ${ !isActive ?'inactive' : '' }`}>
-                        {numDiceRemaining}
-                    </div>
-                    <CardDice 
-                        value={diceDisplayVal} 
-                        size={22}
-                        selectedByUser={isActive ? user : null}
-                        sensitive={false}      
-                    />
-                </div>
-            </div>
-
-        </div>
-    )
-}
-const PlayerList = (props) => {
-    return (
-        <div className='player-list'>
-            {
-                props.users.map((u,idx)=>{
-                    return (
-                        <Player
-                            isActive={(props.currentTurnUserId == u.id)}
-                            user={u}
-                            points={props.userPoints[u.id]}
-                            numDiceRemaining={props.userDiceCounts[u.id]}
-                            diceDisplayVal={(idx+1) % 6}
-                        />
-                    )
-                })
-            }
-        </div>
-    )
-}

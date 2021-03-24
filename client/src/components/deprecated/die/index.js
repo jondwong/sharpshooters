@@ -1,7 +1,7 @@
 
 import './die.scss';
 import React from 'react';
-import { FaRegStar} from 'react-icons/fa';
+import { FaRegStar } from 'react-icons/fa';
 
 /********************************************************
  * Dice
