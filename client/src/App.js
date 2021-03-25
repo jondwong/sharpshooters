@@ -4,8 +4,8 @@ import { initiateSocket } from './socket/socket';
 import { BrowserRouter, Route } from 'react-router-dom';
 import { v4  } from 'uuid';
 
-import SplashPage from './pages/splash';
-import GamePage from './pages/game';
+import SplashPage from './pages/splash-page';
+import GamePage from './pages/game-page';
 
 
 const UUID_FIELD = 'sharpshooter-game-uuid';

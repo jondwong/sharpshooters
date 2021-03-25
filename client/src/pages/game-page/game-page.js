@@ -1,19 +1,19 @@
 import React from 'react';
-import './game.scss';
-import { subscriptions, actions } from '../../socket/socket';
-import { withRouter } from 'react-router-dom';
-import DiceManager from '../../components/dice-manager';
 import _ from 'lodash';
-import MiniMenu from '../../components/minimenu';
+import { withRouter } from 'react-router-dom';
+
+import { subscriptions, actions } from '../../socket/socket';
+
+import DiceManager from '../../components/dice-manager';
 import Header from '../../components/header'
 import GameCard from '../../components/game-card'
 import PlayerList from '../../components/player-list'
 import BorderBox from '../../components/border-box'
 import EndgameModal from './components/endgame-modal/endgame-modal';
 import JoinModal from './components/join-modal';
-import {
-    CenteredVStack, Divider, Spacer
-} from '../../components/layout'
+import TurnIndicator from '../../components/turn-indicator';
+import CardCounter from '../../components/card-counter';
+import { CenteredVStack, Divider, Spacer } from '../../components/layout'
 
 import {
     StyledGamePage,
@@ -24,7 +24,8 @@ import {
     Loading,
     Heading,
     MobilePlayerListContainer,
-    FullScreenPlayerSection
+    FullScreenPlayerSection,
+    InformationSection 
  } from './game-page-styles'
 
 
@@ -154,14 +155,17 @@ class GamePage extends React.Component {
                                 onDiceClick={this._handleCardDiceClicked.bind(this)}
                             
                         />
-                        <MiniMenu 
-                            currentCardIdx={this.state.currentCardIdx}
-                            numCards={this.state.cards.length}
-                            userTurnOrder={this.state.userTurnOrder}
-                            currentTurnUserId={this.state.currentTurn.userId}
-                            users={this.state.users}
-                            userId={this.props.userId}
-                        />
+                        <InformationSection>
+                            <TurnIndicator 
+                                currentTurnUserId={this.state.currentTurn.userId}
+                                userId={this.props.userId}
+                                users={this.state.users}
+                            />
+                            <CardCounter 
+                                currentCardIdx={this.state.currentCardIdx}
+                                numCards={this.state.cards.length}
+                            />
+                        </InformationSection>
                     </GameCardSection>
                     <Divider vertical={true} />
                     <FullScreenPlayerSection>

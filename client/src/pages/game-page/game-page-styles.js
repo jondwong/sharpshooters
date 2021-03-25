@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { StyledPlayerList } from '../../components/player-list/player-list-styles'
 import { HStack, Divider} from '../../components/layout'
+import { StyledTurnIndicator } from '../../components/turn-indicator'
 export const Heading = styled.div`
     font-weight: 900;
     color: white;
@@ -33,6 +34,10 @@ export const StyledGamePage = styled(Page)`
 export const FullScreenPlayerSection = styled.div`
     padding-top: 20px;
     padding-left: 10px;
+
+    ${StyledPlayerList} {
+        margin-top: 10px;
+    }
 `
 
 export const GameContainerHStack = styled.div`
@@ -70,11 +75,26 @@ export const GameControlsSection = styled.div`
 export const MobilePlayerListContainer = styled.div`
     display:none;
     width: 100%;
+    padding: 10px;
+
+    ${StyledPlayerList} {
+        margin-top: 10px;
+    }
+
     @media (max-width:900px) {
         display: block;
         ${StyledPlayerList} {
             width: 100%;
             margin-left:0px;
         }
+    }
+`
+
+export const InformationSection = styled.div`
+    display: flex;
+    flex-direction: row;
+    padding: 10px;
+    ${StyledTurnIndicator} {
+        flex-grow: 1;
     }
 `

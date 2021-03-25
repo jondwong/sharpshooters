@@ -10,7 +10,6 @@ export const StyledDiceManager = styled.div`
     }
 
     @media (max-width:600px) {
-        
         padding:10px;
         ${StyledDice}:not(:first-child) {
             margin-left: 8px;

@@ -1,8 +1,16 @@
-import './splashPage.scss';
 import React from 'react';
 
-import {actions as sactions, subscriptions} from '../../socket/socket';
+import {actions, subscriptions} from '../../socket/socket';
 import { Redirect } from 'react-router-dom';
+
+import {
+    SplashPageLayout,
+    SplashPageContent,
+    SplashPageLogo,
+    SplashPageControlRegion,
+    SplashPageCreateGameSection,
+    SplashPageJoinGameSection
+} from './splash-page-styles'
 
 class SplashPage extends React.Component {
   constructor(props) {
@@ -26,7 +34,7 @@ class SplashPage extends React.Component {
 
 
   createGame() {
-    sactions.createGame({ 
+    actions.createGame({ 
       user: { 
         id: this.state.userId, 
         username: this.state.username 
@@ -46,7 +54,7 @@ class SplashPage extends React.Component {
       this.setState({
         isGameIdInvalid:false
       })
-      sactions.joinGame({ 
+      actions.joinGame({ 
         gameId, 
         user: { 
           id: this.state.userId,
@@ -66,33 +74,33 @@ class SplashPage extends React.Component {
               }}} />
     }
     return (
-      <div className='splash-page-layout'>
-        <div className='splash-page-internal' >
-        <div className='logo front-logo'>sharpshooters.</div>
+      <SplashPageLayout>
+        <SplashPageContent>
+        <SplashPageLogo>sharpshooters.</SplashPageLogo>
         <input className='input' 
                placeholder='Enter your name' 
                value={this.state.username}
                onChange = {function(e) { this.setState({username: e.target.value})}.bind(this)}
         />
-        <div className='splash-page-control'>
-          <div className='splash-page-create-game'>
-            <div className='button' onClick={this.createGame.bind(this)}>Create Game</div>
-          </div>
-          <div>
-            or
-          </div>
-          <div className='splash-page-join-game'>
-            <input className={`input ${this.state.isGameIdInvalid ? 'is-danger' : ''}`}
-                   type="text" 
-                   placeholder="Enter Game Id"
-                  value={this.state.gameId}
-                  onChange={function(e) {this.setState({gameId: e.target.value}); }.bind(this)}
-                   />
-            <div className='button' onClick={this.joinGame.bind(this)}>Join Game</div>
-          </div>
-          </div>
-        </div>
-      </div>
+        <SplashPageControlRegion>
+            <SplashPageCreateGameSection>
+                <div className='button' onClick={this.createGame.bind(this)}>Create Game</div>
+            </SplashPageCreateGameSection>
+            <div>
+                or
+            </div>
+            <SplashPageJoinGameSection>
+                <input className={`input ${this.state.isGameIdInvalid ? 'is-danger' : ''}`}
+                    type="text" 
+                    placeholder="Enter Game Id"
+                    value={this.state.gameId}
+                    onChange={function(e) {this.setState({gameId: e.target.value}); }.bind(this)}
+                    />
+                <div className='button' onClick={this.joinGame.bind(this)}>Join Game</div>
+            </SplashPageJoinGameSection>
+          </SplashPageControlRegion>
+        </SplashPageContent>
+      </SplashPageLayout>
     )
   }
 }
