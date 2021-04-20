@@ -203,6 +203,11 @@ class GamePage extends React.Component {
                         userDiceCounts={this.state.userDiceCounts}
                     />
                 </MobilePlayerListContainer>
+
+                {
+                    this.state.gameState == 'COMPLETE' && this.state.winner &&
+                    <EndgameModal winner={this.state.winner} />
+                }
             </StyledGamePage>
         )
     }
@@ -213,6 +218,7 @@ class GamePage extends React.Component {
 
     _renderLobby() {
         let userInGame = (this.props.userId in this.state.users);
+        let shouldShowStartButton = (userInGame && this.state.userOrder.indexOf(this.props.userId) == 0)
         return (
             <GameLobby>
                 <Header gameId={this.state  ? this.state.id : null}/>
@@ -229,16 +235,26 @@ class GamePage extends React.Component {
                         />
                     </BorderBox>
                     <Spacer size={40}/>
-                    <div style={{marginTop:'20px', display:(this.state.users[this.props.userId] ? 'block': 'none')}}>
-                        <button className='button' onClick={this._startGame.bind(this)}>
-                            Start Game
-                        </button>
-                    </div>
+                    
+                    { 
+                        shouldShowStartButton &&
+                        <div style={{ marginTop: '20px', display: (this.state.users[this.props.userId] && this.state.userOrder[0] === this.props.userId ? 'block' : 'none') }}>
+                            <button className='button' onClick={this._startGame.bind(this)}>Start Game</button>
+                        </div>
+                    }
+                    {
+                        !shouldShowStartButton &&
+                        <div style={{ marginTop: '20px', 'color': '#7c8b9c', "fontWeight": 900, 'textTransform': 'uppercase' }}>
+                            Waiting for the host to begin the game!
+                        </div>
+                    }
+                  
                 </CenteredVStack>
                 { 
                     !userInGame &&
                     <JoinModal onJoinGameClicked={this._joinGame.bind(this)} />
                 }
+                
             </GameLobby>
         )
     }
@@ -259,9 +275,7 @@ class GamePage extends React.Component {
 
         if(this.state.gameState === 'NOT_STARTED') {
             return this._renderLobby();
-        } else if(this.state.gameState == 'COMPLETE' && this.state.winner) {
-            return this._renderEndgame();
-        }
+        } 
 
         return this._renderGame();
     }

@@ -6,11 +6,13 @@ import {
     WinnerScore
 } from './endgame-modal-styles'
 
+import BorderBox from '../../../../components/border-box'
+
 const EndgameModal = ({
     winner
 }) => {
     return (
-        <StyledEndgameModal>
+        <StyledEndgameModal>    
             <WinnerContainer>
                 WINNER
                 <WinnerTitle>{winner.user.username}</WinnerTitle>

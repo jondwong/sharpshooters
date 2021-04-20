@@ -32,3 +32,13 @@ export const WinnerScore = styled.div`
     margin-top:10px;
     font-size:1.5em;
 `;
+
+
+export const PlayAgainContainer = styled.div`
+    margin-top:10px;
+    font-size:20px;
+    text-transform: uppercase;
+    color:white;
+    padding:10px;
+    border:1px solid white;
+`
